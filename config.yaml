@@ -1,0 +1,120 @@
+## YAML 1.1
+
+globals:
+    date: 2024-03-01
+    version: 1.0
+    auther: "Makoto KUNO"
+    log_level: INFO # VERVOSE, DEBUG, INFO, WARN, ERROR
+    default:
+        sampling_time_msec: 100
+        feedback_time_msec: 500
+        saving_time_msec: 1000
+
+service:
+    graph:
+        enable: true
+
+    # only Linux ?
+    photo:
+        enable: true
+        interval_sec: 60
+        device: /dev/video0
+        
+    # only Linux ?
+    video:
+        enable: false
+        mode: ffmpeg
+        device: /dev/video0
+        
+    event_notify:
+        step:
+            enable: false
+            command: ""
+        error:
+            enable: false
+            command: ""
+        finish:
+            enable: false
+            command: ""
+
+devices:
+    contec_ad_board_a:
+        driver: caio
+        uid: caio0 # must be unique string
+        description: "Contec AD16-16(PCI)EV"
+        filter: FIR_50HZ # NONE(default), FIR_50HZ, FIR_60HZ, IIR_50HZ, IIR_60HZ ...
+        interface: # not actual just reference
+            ai:
+                num_ch: 16
+                chs:
+                    -   ch: 0 # must start from Zero
+                        uid: "v_lc" # must be unique string
+                        raw: { label: "Loadcell",   unit: "V"}
+                        phy: { label: "V_Press",    unit: "[kN]"}
+                    -   ch: 1
+                        uid: "v_disp" # must be unique string
+                        raw: { label: "Displacement",   unit: "V"}
+                        phy: { label: "V_Disp",         unit: "[mm]"}
+        environment:
+            DEVICE_NAME: AIO000
+            AD_RANGE: PM5
+            AI_SCAN_CLOCK_MS: 60
+
+    hx711_a:
+        driver: rpi_hx711
+        uid: hx711a
+        description: "HX711 24bit AD converter"
+        interface: 
+            ai:
+                num_ch: 1
+            ao:
+                num_ch: 0
+        environment:
+            PIN_DAT: "gpio:12"
+            PIN_CLK: "gpio:13"
+
+    modbus_tcp_a:
+        device_name: mb0 # must be unique string
+        description: "CWT-MB308S 16ai+4ao+8di+6do"
+        driver: modbus_tcp
+        environment:
+            IP_ADDRESS: 192.168.0.1
+            PORT: 3000
+        interface:
+            ai:
+                num_ch: 16
+            ao:
+                num_ch: 4
+            di:
+                num_ch: 8
+            do:
+                num_ch: 6
+
+    modbus_rtu_b:
+        device_name: mb0 # must be unique string
+        description: "CWT-MB308S 16ai+4ao+8di+6do"
+        driver: modbus_tcp
+        environment:
+            PORT: COM9
+            STOP_BITS: 1
+            BYTE_SIZE: 8
+            PARIY: "N"
+            BAUDRATE: 9600
+            TIMEOUT: 1
+        interface:
+            ai:
+                num_ch: 16
+            ao:
+                num_ch: 4
+            di:
+                num_ch: 8
+            do:
+                num_ch: 6
+
+#devices:
+    #driver:
+        # - caio ## CONTEC AIO driver
+        # - iaio ## Interface AIO driver
+        # - rpi_hx711
+        # - rpi_gpio
+        # - tds_serial
