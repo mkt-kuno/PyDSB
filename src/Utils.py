@@ -134,9 +134,9 @@ def _DDeviceGenerator(key: str, value):
     if 'environment' in value:
         _environment = MappingProxyType(value['environment'])
     return DDevice(name=key, driver=_driver, uid=_uid,
-                    description=_description,
-                    interface= _interface,
-                    environment=_environment)
+                   description=_description,
+                   interface= _interface,
+                   environment=_environment)
 
 
 def ConfigLoader(path: tuple[DDevice]):
