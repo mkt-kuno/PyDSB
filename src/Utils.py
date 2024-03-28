@@ -17,7 +17,7 @@ class DLabel:
 @dataclass(frozen=True)
 class DChannel:
     ch: int # Key
-    uid: str
+    id: str
     unit: str
     raw: DLabel
     phy: DLabel
@@ -32,7 +32,7 @@ class DInterface:
 class DDevice:
     name: str = "" # Key
     driver: str = ""
-    uid: str = ""
+    id: str = ""
     description: str = ""
     #filter: str
     interface: MappingProxyType = MappingProxyType({})
@@ -44,40 +44,15 @@ class DConfig:
     service: MappingProxyType = MappingProxyType({})
     devices: MappingProxyType[DDevice] = MappingProxyType({})
 
-# def _recursively(input={}):
-#     if isinstance(input, (dict)):
-#         d = {}
-#         for key, val in input.items():
-#             if isinstance(val, (dict, list, tuple)):
-#                 val = _recursively(val)
-#             d[key] = val
-#         return MappingProxyType(d)
-#     elif isinstance(input, (list, tuple)):
-#         l = []
-#         for val in input:
-#             if isinstance(val, (dict, list, tuple)):
-#                 val = _recursively(val)
-#             l.append(val)
-#         return tuple(l)
-#     return MappingProxyType({})
-
-# def Old_ConfigLoader(path: str):
-#     config = MappingProxyType({})
-#     yaml=YAML(typ="safe")
-#     with open(path, 'r') as f:
-#         config = _recursively(yaml.load(f))
-#     return config
-
-
 def _DChannelGenerator(index:int, value):
     _ch = index
-    _uid = _unit = ""
+    _id = _unit = ""
     _raw = DLabel(label="", unit="")
     _phy = DLabel(label="", unit="")
     if 'ch' in value:
         _ch = value['ch']
-    if 'uid' in value:
-        _uid = value['uid']
+    if 'id' in value:
+        _id = value['id']
     if 'unit' in value:
         _unit = value['unit']
     if 'raw' in value:
@@ -94,7 +69,7 @@ def _DChannelGenerator(index:int, value):
         if 'unit' in value['raw']:
             _unit = value['raw']['unit']
         _phy = DLabel(label=_label, unit=_unit)
-    return DChannel(ch=_ch, uid=_uid, unit=_unit, raw=_raw, phy=_phy)
+    return DChannel(ch=_ch, id=_id, unit=_unit, raw=_raw, phy=_phy)
 
 def _DInterfaceGenerator(key: str, value):
     _name = EInterfaceType.ai
@@ -117,13 +92,13 @@ def _DInterfaceGenerator(key: str, value):
     return DInterface(name=_name, num_ch=_num_ch, chs=_chs)
 
 def _DDeviceGenerator(key: str, value):
-    _driver = _uid = _description = ""
+    _driver = _id = _description = ""
     _interface = MappingProxyType({})
     _environment = MappingProxyType({})
     if 'driver' in value:
         _driver = value['driver']
-    if 'uid' in value:
-        _uid = value['uid']
+    if 'id' in value:
+        _id = value['id']
     if 'description' in value:
         _description = value['description']
     if 'interface' in value:
@@ -133,7 +108,7 @@ def _DDeviceGenerator(key: str, value):
         _interface = MappingProxyType(_interface)
     if 'environment' in value:
         _environment = MappingProxyType(value['environment'])
-    return DDevice(name=key, driver=_driver, uid=_uid,
+    return DDevice(name=key, driver=_driver, id=_id,
                    description=_description,
                    interface= _interface,
                    environment=_environment)
@@ -151,6 +126,7 @@ def ConfigLoader(path: tuple[DDevice]):
             _devices[key] = _DDeviceGenerator(key, value)
     config = DConfig(devices=MappingProxyType(_devices))
     return config
-        
-config = ConfigLoader('./config.yaml')
-print(config.devices)
+
+if __name__ == "__main__":
+    config = ConfigLoader('./config.yaml')
+    print(config.devices)

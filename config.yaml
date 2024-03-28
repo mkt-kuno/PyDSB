@@ -38,9 +38,21 @@ service:
             command: ""
 
 devices:
+    dummy_sine_a:
+        driver: dummy_sin
+        id: "dsin0" # must be unique string
+        interface: # not actual just reference
+            ai:
+                num_ch: 1
+                chs:
+                    -   ch: 0 # must start from Zero
+                        id: "v_lc" # must be unique string
+                        raw: { label: "Value",   unit: "V"}
+                        phy: { label: "V_Press",    unit: "[kN]"}
+
     contec_ad_board_a:
         driver: caio
-        uid: caio0 # must be unique string
+        id: caio0 # must be unique string
         description: "Contec AD16-16(PCI)EV"
         filter: FIR_50HZ # NONE(default), FIR_50HZ, FIR_60HZ, IIR_50HZ, IIR_60HZ ...
         interface: # not actual just reference
@@ -48,11 +60,11 @@ devices:
                 num_ch: 16
                 chs:
                     -   ch: 0 # must start from Zero
-                        uid: "v_lc" # must be unique string
+                        id: "v_lc" # must be unique string
                         raw: { label: "Loadcell",   unit: "V"}
                         phy: { label: "V_Press",    unit: "[kN]"}
                     -   ch: 1
-                        uid: "v_disp" # must be unique string
+                        id: "v_disp" # must be unique string
                         raw: { label: "Displacement",   unit: "V"}
                         phy: { label: "V_Disp",         unit: "[mm]"}
         environment:
@@ -62,7 +74,7 @@ devices:
 
     hx711_a:
         driver: rpi_hx711
-        uid: hx711a
+        id: hx711a
         description: "HX711 24bit AD converter"
         interface: 
             ai:

@@ -1,0 +1,53 @@
+## YAML 1.1
+
+globals:
+    date: 2024-03-01
+    version: 1.0
+    auther: "Makoto KUNO"
+    log_level: INFO # VERVOSE, DEBUG, INFO, WARN, ERROR
+    default:
+        sampling_time_msec: 100
+        feedback_time_msec: 500
+        saving_time_msec: 1000
+
+service:
+    graph:
+        enable: true
+
+    # only Linux ?
+    photo:
+        enable: true
+        interval_sec: 60
+        device: /dev/video0
+        
+    # only Linux ?
+    video:
+        enable: false
+        mode: ffmpeg
+        device: /dev/video0
+        
+    event_notify:
+        step:
+            enable: false
+            command: ""
+        error:
+            enable: false
+            command: ""
+        finish:
+            enable: false
+            command: ""
+
+devices:
+    dummy_sine_a:
+        driver: dummy_wave
+        id: "sin0" # must be unique string
+        interface: # not actual just reference
+            ai:
+                num_ch: 1
+                chs:
+                    -   ch: 0 # must start from Zero
+                        id: "v_lc" # must be unique string
+                        raw: { label: "Value",   unit: "V"}
+                        phy: { label: "V_Press",    unit: "[kN]"}
+        environment:
+            mode: "square"
