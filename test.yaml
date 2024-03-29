@@ -47,7 +47,7 @@ devices:
                 chs:
                     -   ch: 0 # must start from Zero
                         id: "v_lc" # must be unique string
-                        raw: { label: "Value",   unit: "V"}
-                        phy: { label: "V_Press",    unit: "[kN]"}
+                        raw: { label: "Volt",   unit: "(V)"}
+                        phy: { label: "Press", unit: "(kN)"}
         environment:
             mode: "square"

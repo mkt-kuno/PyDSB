@@ -25,21 +25,27 @@ class CDriver:
     def set_digital_data(self):
         pass
 
-def _driver_loader(dev_config: utils.DDevice) -> CDriver:
-    ret = None
-    try:
-        ret = importlib.import_module(f"drivers.{dev_config.driver}").Driver(dev_config)
-        if isinstance(ret, CDriver) != False:
-            ret = None
-    except Exception as e:
-        pass
-    return ret
+class Model:
+    def _driver_loader(self, dev_config: utils.DDevice) -> CDriver:
+        ret = None
+        try:
+            ret = importlib.import_module(f"drivers.{dev_config.driver}").Driver(dev_config)
+            if isinstance(ret, CDriver) != False:
+                ret = None
+        except Exception as e:
+            pass
+        return ret
+
+    def test_get_channel_list(self) -> list[utils.DChannel]:
+        config = utils.ConfigLoader('./test.yaml')
+        for key, value in config.devices.items():
+            return value.interface["ai"].chs["0"]
 
 if __name__  == "__main__":
     config = utils.ConfigLoader('./test.yaml')
     dev = None
     for key, value in config.devices.items():
-        dev = _driver_loader(value)
+        dev = Model()._driver_loader(value)
     # import drivers.dummy_wave
     # dev = drivers.dummy_wave.Driver()
     dev.start()

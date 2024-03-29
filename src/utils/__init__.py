@@ -11,8 +11,9 @@ class EInterfaceType(Enum):
 
 @dataclass(frozen=True)
 class DLabel:
-    label: str
-    unit: str
+    label: str = ""
+    unit: str = ""
+    format: str = "{:+11.3f}"
 
 @dataclass(frozen=True)
 class DChannel:
@@ -56,25 +57,31 @@ def _DChannelGenerator(index:int, value):
     if 'unit' in value:
         _unit = value['unit']
     if 'raw' in value:
-        _label = ""
+        _unit = _label = ""
+        _format = "{:+11.4f}"
         if 'label' in value['raw']:
             _label = value['raw']['label']
         if 'unit' in value['raw']:
             _unit = value['raw']['unit']
-        _raw = DLabel(label=_label, unit=_unit)
+        if 'format' in value['raw']:
+            _format = value['raw']['format']
+        _raw = DLabel(label=_label, unit=_unit, format=_format)
     if 'phy' in value:
-        _label = ""
-        if 'label' in value['raw']:
-            _label = value['raw']['label']
-        if 'unit' in value['raw']:
-            _unit = value['raw']['unit']
-        _phy = DLabel(label=_label, unit=_unit)
+        _unit = _label = ""
+        _format = "{:+11.4f}"
+        if 'label' in value['phy']:
+            _label = value['phy']['label']
+        if 'unit' in value['phy']:
+            _unit = value['phy']['unit']
+        if 'format' in value['phy']:
+            _format = value['phy']['format']
+        _phy = DLabel(label=_label, unit=_unit, format=_format)
     return DChannel(ch=_ch, id=_id, unit=_unit, raw=_raw, phy=_phy)
 
 def _DInterfaceGenerator(key: str, value):
     _name = EInterfaceType.ai
     _num_ch = 0
-    _chs = MappingProxyType({})
+    _chs = {}
     match key:
         case 'ai':
             _name = EInterfaceType.ai
@@ -88,8 +95,9 @@ def _DInterfaceGenerator(key: str, value):
         _num_ch = value['num_ch']
     if 'chs' in value:
         for index, value in enumerate(value['chs']):
-            _chs = _DChannelGenerator(index, value)
-    return DInterface(name=_name, num_ch=_num_ch, chs=_chs)
+            temp = _DChannelGenerator(index, value)
+            _chs[str(temp.ch)] = temp
+    return DInterface(name=_name, num_ch=_num_ch, chs=MappingProxyType(_chs))
 
 def _DDeviceGenerator(key: str, value):
     _driver = _id = _description = ""
