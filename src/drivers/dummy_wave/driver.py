@@ -1,4 +1,4 @@
-import Utils
+import utils
 import Model
 
 import time
@@ -6,10 +6,10 @@ import numpy as np
 import math
 
 class Driver(Model.CDriver):
-    def __init__(self, config:Utils.DDevice = Utils.DDevice()) -> None:
+    def __init__(self, config:utils.DDevice = utils.DDevice()) -> None:
         super().__init__(config)
         self._mode = "sin"
-        if isinstance(config, Utils.DDevice) and 'mode' in config.environment:
+        if isinstance(config, utils.DDevice) and 'mode' in config.environment:
             mode = config.environment['mode']
             if mode in ("sin","cos","tan", "square"):
                 self._mode = mode

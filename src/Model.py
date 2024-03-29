@@ -1,4 +1,4 @@
-import Utils
+import utils
 
 import importlib
 import math
@@ -8,7 +8,7 @@ import numpy as np
 class CDriver:
     def get_driver_type(self):
         pass
-    def __init__(self, config:Utils.DDevice = Utils.DDevice()) -> None:
+    def __init__(self, config:utils.DDevice = utils.DDevice()) -> None:
         pass
     def init(self):
         pass
@@ -25,7 +25,7 @@ class CDriver:
     def set_digital_data(self):
         pass
 
-def _driver_loader(dev_config: Utils.DDevice) -> CDriver:
+def _driver_loader(dev_config: utils.DDevice) -> CDriver:
     ret = None
     try:
         ret = importlib.import_module(f"drivers.{dev_config.driver}").Driver(dev_config)
@@ -36,11 +36,10 @@ def _driver_loader(dev_config: Utils.DDevice) -> CDriver:
     return ret
 
 if __name__  == "__main__":
-    config = Utils.ConfigLoader('./test.yaml')
+    config = utils.ConfigLoader('./test.yaml')
     dev = None
     for key, value in config.devices.items():
         dev = _driver_loader(value)
-    print(dev)
     # import drivers.dummy_wave
     # dev = drivers.dummy_wave.Driver()
     dev.start()
