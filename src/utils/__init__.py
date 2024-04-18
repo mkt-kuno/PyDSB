@@ -82,15 +82,15 @@ def _DInterfaceGenerator(key: str, value):
     _name = EInterfaceType.ai
     _num_ch = 0
     _chs = {}
-    match key:
-        case 'ai':
-            _name = EInterfaceType.ai
-        case 'ao':
-            _name = EInterfaceType.ao
-        case 'di':
-            _name = EInterfaceType.di
-        case 'do':
-            _name = EInterfaceType.do
+
+    if 'ai' in value:
+        _name = EInterfaceType.ai
+    elif 'ao' in value:
+        _name = EInterfaceType.ao
+    elif 'di' in value:
+        _name = EInterfaceType.di
+    elif 'do' in value:
+        _name = EInterfaceType.do
     if 'num_ch' in value:
         _num_ch = value['num_ch']
     if 'chs' in value:
