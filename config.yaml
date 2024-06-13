@@ -38,15 +38,29 @@ service:
             command: ""
 
 devices:
+    serial_hx711:
+        driver: jsonserial
+        id: shx711
+        interface: 
+            ai:
+                num_ch: 3
+                chs:
+                    -   ch: 0 # must start from Zero
+                        id: "v_lc" # must be unique string
+                        raw: { label: "Volt",   unit: "(V)"}
+                        phy: { label: "Press", unit: "(kN)"}
+        environment:
+            port: "COM3"
+
     dummy_sine_a:
-        driver: dummy_sin
+        driver: dummy_wave
         id: "dsin0" # must be unique string
         interface: # not actual just reference
             ai:
                 num_ch: 1
                 chs:
                     -   ch: 0 # must start from Zero
-                        id: "v_lc" # must be unique string
+                        id: "ddd01" # must be unique string
                         raw: { label: "Value",   unit: "V"}
                         phy: { label: "V_Press",    unit: "[kN]"}
 
@@ -68,6 +82,7 @@ devices:
                         raw: { label: "Displacement",   unit: "V"}
                         phy: { label: "V_Disp",         unit: "[mm]"}
         environment:
+            MODE: INTERLEAVE # or NORMAL
             DEVICE_NAME: AIO000
             AD_RANGE: PM5
             AI_SCAN_CLOCK_MS: 60
@@ -89,6 +104,7 @@ devices:
         device_name: mb0 # must be unique string
         description: "CWT-MB308S 16ai+4ao+8di+6do"
         driver: modbus_tcp
+        id: "mbtcpa"
         environment:
             IP_ADDRESS: 192.168.0.1
             PORT: 3000
@@ -106,6 +122,7 @@ devices:
         device_name: mb0 # must be unique string
         description: "CWT-MB308S 16ai+4ao+8di+6do"
         driver: modbus_tcp
+        id: "mbrtub"
         environment:
             PORT: COM9
             STOP_BITS: 1

@@ -1,7 +1,11 @@
-import sys
-import time
-import datetime
 import utils
+
+import sys
+import datetime
+import itertools
+
+import Model
+
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QAction, QFont, QPalette, QColor
 from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QTabWidget, QGridLayout, QFrame
@@ -64,15 +68,19 @@ class MainTab(QWidget):
         box = QVBoxLayout(self)
         self.setLayout(box)
         
-        # @test
-        import Model
-        config = Model.Model().test_get_channel_list()
+        self._model = Model.Model()
+        ai_config_list = self._model.get_ai_config_list()
 
         wid = QWidget()
         grid = QGridLayout()
-        for row in range(3):
-            for col in range(6):
-                grid.addWidget(AnalogInChannelBox(config), row, col)
+        row = 1
+        col = 1
+        for config in ai_config_list:
+            grid.addWidget(AnalogInChannelBox(config), row, col)
+            row += 1
+            if row >= 4:
+                row = 0
+                col += 1
         wid.setLayout(grid)
         box.addWidget(wid)
 
@@ -95,7 +103,6 @@ class VersionTab(QWidget):
         btn = QPushButton('Test')
         box.addWidget(label)
         box.addWidget(btn)
-
 
 def main():
     app = QApplication(sys.argv)

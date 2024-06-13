@@ -1,11 +1,10 @@
 import utils
-import Model
 
 import time
 import numpy as np
 import math
 
-class Driver(Model.CDriver):
+class Driver(utils.CDriver):
     def __init__(self, config:utils.DDevice = utils.DDevice()) -> None:
         super().__init__(config)
         self._mode = "sin"

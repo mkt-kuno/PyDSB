@@ -38,16 +38,30 @@ service:
             command: ""
 
 devices:
-    dummy_sine_a:
-        driver: dummy_wave
-        id: "sin0" # must be unique string
-        interface: # not actual just reference
+    serial_hx711:
+        driver: jsonserial
+        id: shx711
+        interface: 
             ai:
-                num_ch: 1
+                num_ch: 3
                 chs:
                     -   ch: 0 # must start from Zero
                         id: "v_lc" # must be unique string
                         raw: { label: "Volt",   unit: "(V)"}
                         phy: { label: "Press", unit: "(kN)"}
         environment:
-            mode: "square"
+            port: "COM3"
+
+    # dummy_sine_a:
+    #     driver: dummy_wave
+    #     id: "sin0" # must be unique string
+    #     interface: # not actual just reference
+    #         ai:
+    #             num_ch: 1
+    #             chs:
+    #                 -   ch: 0 # must start from Zero
+    #                     id: "v_lc" # must be unique string
+    #                     raw: { label: "Volt",   unit: "(V)"}
+    #                     phy: { label: "Press", unit: "(kN)"}
+    #     environment:
+    #         mode: "square"
